@@ -1,0 +1,33 @@
+extends ../layout
+block content
+	h2.page-header 分类列表
+	table.table.table-bordered
+		thead
+			tr
+				th(width="30%") 分类名称
+				th 发布时间
+				th 管理
+		tbody
+		each category in categories
+			tr
+				td #{category.name}
+				td #{moment(category.created).format('YYYY-MM-DD')}
+				td.manger
+					a(href="/admin/categories/edit/" + category._id, class="btn btn-sm btn-info") 编辑
+					a(href="/admin/categories/delete/" + category._id, class="btn btn-sm btn-danger") 删除
+
+	//- 分页器
+	//- 注意路由与前台不一样哦
+	//- add on date 2017=03-11 需要将排序字段传递到枫叶其中，否则翻页时将不会有排序效果，参考标题中参数传递顺序
+	if pageCount > 1
+		nav
+			ul.pagination
+				- var currentPage = 1;
+				while currentPage < pageCount
+					if(currentPage === pageNum)
+						li.active
+							a(href="/admin/categories?page=" + currentPage) #{currentPage++}
+					else
+						li
+							a(href="/admin/categories?page=" + currentPage) #{currentPage++}
+

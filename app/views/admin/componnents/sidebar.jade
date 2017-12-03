@@ -1,0 +1,49 @@
+ul.nav.nav-sidebar
+	//- 动态判断是否为当前页面，添加激活样式
+	li(class={active: pageName ==="/admin/posts"})
+		a(href="/admin/posts")
+			i.fa.fa-book
+			| &nbsp;文章列表
+			span.sr-only (current)
+	li(class={active: pageName ==="/admin/posts/add"})
+		a(href="/admin/posts/add")
+			i.fa.fa-plus
+			| &nbsp;添加文章
+	li(class={active: pageName ==="/admin/categories"})
+		a(href="/admin/categories")
+			i.fa.fa-list-ol
+			| &nbsp;分类列表
+	li(class={active: pageName ==="/admin/categories/add"})
+		a(href="/admin/categories/add")
+			i.fa.fa-plus-square-o
+			| &nbsp;添加分类
+ul.nav.nav-sidebar
+	li
+		a(href="/admin/users/list")
+			i.fa.fa-list
+			| &nbsp;用户列表
+	li
+		a(href="/admin/users/add")
+			i.fa.fa-plus-circle
+			| &nbsp;新增用户
+	li
+		a(href="/admin/users/delete")
+			i.fa.fa-trash-o
+			| &nbsp;删除用户
+	li
+		a(href="/admin/users/password")
+			i.fa.fa-key
+			| &nbsp;修改密码
+
+//- ul.nav.nav-sidebar
+//- 	li
+//- 		a(href="") 文章列表
+//- 	li
+//- 		a(href="") 新增文章
+//- 	li
+//- 		a(href="") 修改文章
+//- 	li
+//- 		a(href="") 删除文章
+//- 	li
+//- 		a(href="") 更多
+

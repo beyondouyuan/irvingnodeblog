@@ -1,0 +1,228 @@
+extends ../layout
+block content
+	h2.page-header 文章列表
+
+	from#form-post-filter.form.form-inline.form-filter
+		.form-group
+			label 分类
+			select#js-category.form-control(name="category")
+				option(value="", selected=(filter.category === "")) - 选择分类 -
+				each category in categories
+					option(value="#{category._id}",selected=(category._id.toString() === filter.category)) #{category.name}
+		.form-group
+			label 作者
+			select#js-author.form-control(name="author")
+				option(value="", selected=(filter.author === "")) - 选择作者 -
+				each author in authors
+					option(value="#{author._id}",selected=(author._id.toString() === filter.author)) #{author.name}
+		buttom#js-filter-submit.btn.btn-info 筛选
+
+	table.table.table-bordered
+		thead
+			tr
+				th(width="30%")
+					if (sortby === 'title')
+						//- 若是当前已经按标题排序，
+						if (sortdir === 'desc')
+							//- 若是按降序排序，则点击后变为按升序排序
+							a(href="/admin/posts?page=" + pageNum + "&sortby=title&sortdir=asc")
+								i.fa.fa-arrow-down &nbsp; 标题
+						else
+							//- 若是按升序排序，则点击后变为按降序排序
+							a(href="/admin/posts?page=" + pageNum + "&sortby=title&sortdir=desc")
+								i.fa.fa-arrow-up &nbsp; 标题
+					else
+						//- 若是当前不是按照标题排序，点击后变为按标题降序排序
+						a(href="/admin/posts?page=" + pageNum + "&sortby=title&sortdir=desc") &nbsp; 标题
+				th
+					if (sortby === 'category')
+						if (sortdir === 'desc')
+							a(href="/admin/posts?page=" + pageNum + "&sortby=category&sortdir=asc")
+								i.fa.fa-arrow-down &nbsp; 分类
+						else
+							a(href="/admin/posts?page=" + pageNum + "&sortby=category&sortdir=desc")
+								i.fa.fa-arrow-up &nbsp; 分类
+					else
+						a(href="/admin/posts?page=" + pageNum + "&sortby=category&sortdir=desc") &nbsp; 分类
+				th
+					if (sortby === 'author')
+						if (sortdir === 'desc')
+							a(href="/admin/posts?page=" + pageNum + "&sortby=author&sortdir=asc")
+								i.fa.fa-arrow-down &nbsp; 作者
+						else
+							a(href="/admin/posts?page=" + pageNum + "&sortby=author&sortdir=desc")
+								i.fa.fa-arrow-up &nbsp; 作者
+					else
+						a(href="/admin/posts?page=" + pageNum + "&sortby=author&sortdir=desc") &nbsp; 作者
+				th
+					if (sortby === 'created')
+						if (sortdir === 'desc')
+							a(href="/admin/posts?page=" + pageNum + "&sortby=created&sortdir=asc")
+								i.fa.fa-arrow-down &nbsp; 发布时间
+						else
+							a(href="/admin/posts?page=" + pageNum + "&sortby=created&sortdir=desc")
+								i.fa.fa-arrow-up &nbsp; 发布时间
+					else
+						a(href="/admin/posts?page=" + pageNum + "&sortby=created&sortdir=desc") &nbsp; 发布时间
+				th 喜欢
+				th 评论
+				th
+					if (sortby === 'published')
+						if (sortdir === 'desc')
+							a(href="/admin/posts?page=" + pageNum + "&sortby=published&sortdir=asc")
+								i.fa.fa-arrow-down &nbsp; 状态
+						else
+							a(href="/admin/posts?page=" + pageNum + "&sortby=published&sortdir=desc")
+								i.fa.fa-arrow-up &nbsp; 状态
+					else
+						a(href="/admin/posts?page=" + pageNum + "&sortby=published&sortdir=desc") &nbsp; 状态
+				th 管理
+		tbody
+		each post in posts
+			tr
+				td
+					a(href="/posts/view/" + post._id, target="_blank") #{post.title}
+				td #{post.category.name}
+				td #{post.author.name}
+				td #{moment(post.created).format('YYYY-MM-DD')}
+				td #{post.meta.love || 0}
+				td #{post.comments.length || 0}
+				td= post.published ? '已发布' : '待发布'
+				td.manger
+					a(href="/posts/view/" + post._id, class="btn btn-sm btn-success",target="_blank") 查看
+					a(href="/admin/posts/edit/" + post._id, class="btn btn-sm btn-info") 编辑
+					a(href="/admin/posts/delete/" + post._id, class="btn btn-sm btn-danger") 删除
+
+	//- 第一种分页器
+	//- 注意路由与前台不一样哦
+	//- add on date 2017-03-11 需要将排序字段传递到枫叶其中，否则翻页时将不会有排序效果，参考标题中参数传递顺序
+	//- if pageCount > 1
+	//- 	nav
+	//- 		ul.pagination
+	//- 			- var currentPage = 1;
+	//- 			while currentPage < pageCount
+	//- 				if(currentPage === pageNum)
+	//- 					li.active
+	//- 						a(href="/admin/posts?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir) #{currentPage++}
+	//- 				else
+	//- 					li
+	//- 						a(href="/admin/posts?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir) #{currentPage++}
+	//- 修改，第二种分页====>>>>>>>增加上一页/下一页
+	//- if pageCount > 1
+	//- 	nav
+	//- 		ul.pagination
+	//- 			- var currentPage = 1;
+	//- 			- var prevPage = pageNum-1
+	//- 			- var nextPage = pageNum+1
+	//- 			if (pageNum > 1)
+	//- 				li
+	//- 					a(href="/admin/posts?page=" + prevPage + "&sortby=" + sortby + "&sortdir=" + sortdir) 上一页
+	//- 			while currentPage < pageCount
+	//- 				if (currentPage === pageNum)
+	//- 					li.active
+	//- 						a(href="/admin/posts?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir) #{currentPage++}
+	//- 				else
+	//- 					li
+	//- 						a(href="/admin/posts?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir) #{currentPage++}
+
+	//- 			if (pageCount - 1 > pageNum)
+	//- 				li
+	//- 					a(href="/admin/posts?page=" + nextPage + "&sortby=" + sortby + "&sortdir=" + sortdir) 下一页
+
+	//- 修改，第三种分页====>>>>>>>增加隐藏中间部分，只显示最前最后的5页
+	//- if pageCount > 1
+	//- 	nav
+	//- 		ul.pagination
+	//- 			//- 左侧分页部分
+	//- 			mixin pageLeft
+	//- 				//- 实际上pageNum才是当前页码
+	//- 				//- currentPage用于迭代，初始值与当前页码相等
+	//- 				- var currentPage = pageNum;
+	//- 				- var prevPage = pageNum-1
+	//- 				- var nextPage = pageNum+1
+	//- 				- var firstPage = 1;
+	//- 				- var lastPage = pageCount;
+	//- 				//- 左边显示最大截止页码
+	//- 				- var leftOff = pageNum+5;
+	//- 				//- 右边显示最小截止页码
+	//- 				- var rightOff = pageCount-5;
+	//- 				if (pageNum > 2)
+	//- 					li
+	//- 						a(href="/admin/posts?page=" + firstPage + "&sortby=" + sortby + "&sortdir=" + sortdir) 首页
+	//- 				if (pageNum > 1)
+	//- 					li
+	//- 						a(href="/admin/posts?page=" + prevPage + "&sortby=" + sortby + "&sortdir=" + sortdir) 上一页
+	//- 				while currentPage < leftOff && currentPage <= pageCount
+	//- 					if (currentPage === pageNum)
+	//- 						li.active
+	//- 							a(href="/admin/posts?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir) #{currentPage++}
+	//- 					else
+	//- 						li
+	//- 							a(href="/admin/posts?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir) #{currentPage++}
+
+	//- 			//- 中间分页部分
+	//- 			mixin pageCenter
+	//- 				//- 左边显示最大截止页码
+	//- 				- var leftOff = pageNum+5;
+	//- 				//- 右边显示最小截止页码
+	//- 				- var rightOff = pageCount-5;
+	//- 				if leftOff < rightOff
+	//- 					li
+	//- 						a(href="#") ...
+	//- 			//- 右侧分页部分
+	//- 			mixin pageRigth
+	//- 				//- 右边显示最小截止页码
+	//- 				- var rightOff = pageCount-5;
+	//- 				- var currentPage = rightOff;
+	//- 				- var nextPage = pageNum+1
+	//- 				- var lastPage = pageCount-1;
+	//- 				while currentPage <= pageCount && pageNum < rightOff-5
+	//- 					if (currentPage === pageNum)
+	//- 						li.active
+	//- 							a(href="/admin/posts?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir) #{currentPage++}
+	//- 					else
+	//- 						li
+	//- 							a(href="/admin/posts?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir) #{currentPage++}
+	//- 				if (pageCount - 1 >= pageNum)
+	//- 					li
+	//- 						a(href="/admin/posts?page=" + nextPage + "&sortby=" + sortby + "&sortdir=" + sortdir) 下一页
+	//- 				if (pageNum !== pageCount)
+	//- 					li
+	//- 						a(href="/admin/posts?page=" + lastPage + "&sortby=" + sortby + "&sortdir=" + sortdir) 尾页
+	//- 			//- +pageLeft
+	//- 			//- +pageCenter
+	//- 			//- +pageRigth
+	//- 修改，第四种分页====>>>>>>>只显示5页，其余部分均隐藏，并添加跳转
+	if pageCount > 1
+		nav
+			ul.pagination
+				- var currentPage = pageNum;
+				- var prevPage = pageNum-1
+				- var nextPage = pageNum+1
+				- var firstPage = 1;
+				- var lastPage = pageCount;
+				//- 左边显示最大截止页码
+				- var leftOff = pageNum+5;
+				if (pageNum > 2)
+					li
+						a(href="/admin/posts?page=" + firstPage + "&sortby=" + sortby + "&sortdir=" + sortdir) 首页
+				if (pageNum > 1)
+					li
+						a(href="/admin/posts?page=" + prevPage + "&sortby=" + sortby + "&sortdir=" + sortdir) 上一页
+				while currentPage < leftOff && currentPage <= pageCount
+					if (currentPage === pageNum)
+						li.active
+							a(href="/admin/posts?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir) #{currentPage++}
+					else
+						li
+							a(href="/admin/posts?page=" + currentPage + "&sortby=" + sortby + "&sortdir=" + sortdir) #{currentPage++}
+				if (pageCount - 1 >= pageNum)
+					li
+						a(href="/admin/posts?page=" + nextPage + "&sortby=" + sortby + "&sortdir=" + sortdir) 下一页
+				if (pageNum !== pageCount)
+					li
+						a(href="/admin/posts?page=" + lastPage + "&sortby=" + sortby + "&sortdir=" + sortdir) 尾页
+				span.col-xs-2
+					input.form-control.input-sm(type="text",value="",placeholder="页码...")
+				span.col-xs-2
+					a.btn.btn-info.btn-sm(href="jvascript:;",name="btn-jump") 跳转

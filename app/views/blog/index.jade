@@ -1,0 +1,30 @@
+extends layout
+block content
+	h2.page-header IrvingNodeBlog的博文
+	each post in posts
+		.post
+			h3.post-title
+				a(href="/posts/view/" + post.slug, target="_blank") #{post.title}
+			.post-abstract #{truncate(post.content, 150)}
+			.post-meta
+				span.post-created 时间：&nbsp; #{moment(post.created).format('YYYY-MM-DD')}
+				span.post-author 作者：&nbsp; #{post.author.name}
+				span.post-category 分类：&nbsp;
+					a(href="/posts/category/" + post.category.name,target="_blank") #{post.category.name}
+				span.post-comment 评论：&nbsp; #{post.comments.length || 0}
+				span.post-comment 喜欢：&nbsp; #{post.meta.love || 0}
+				span.post-link
+					a(href="/posts/view/" + post.slug, target="_blank") 查看全文
+	//- 分页器
+	if pageCount > 1
+		nav
+			ul.pagination
+				- var currentPage = 1;
+				while currentPage < pageCount+1
+					if(currentPage === pageNum)
+						li.active
+							a(href="/posts?page=" + currentPage) #{currentPage++}
+					else
+						li
+							a(href="/posts?page=" + currentPage) #{currentPage++}
+

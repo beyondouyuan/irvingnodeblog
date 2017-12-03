@@ -1,0 +1,21 @@
+.sidebar-module.sidebar-module-inset
+	h2 关于作者
+	p
+		|来自安静的美男子
+		|beyondouyuan
+.sidebar-module
+	h4 归档
+	ol.list-unstyled
+		each category in categories
+			li
+				a(href="/posts/category/" + category.name,target="_blank") #{category.name}
+
+.sidebar-module
+	h4 关注我
+	ol.list-unstyled
+		li
+			a(href="#") Github
+		li
+			a(href="#") 知乎
+		li
+			a(href="#") 博客

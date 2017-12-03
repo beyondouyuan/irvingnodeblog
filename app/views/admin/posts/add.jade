@@ -1,0 +1,31 @@
+extends ../layout
+block content
+	h2.page-header 添加文章
+
+
+	if errors && errors.length
+		.errors
+			each error in errors
+				p.alert.alert-danger #{error.msg}
+
+	//- 修改代码以便代码复用，用于文章编辑,action由后端传递而来
+	form#add-post-form.vertical-form(method="post", action=action)
+		.form-group
+			label(for="title") 标题
+			input.form-control.input-lg(name="title", type="text", required, placeholder="请输入标题...",value= post.title)
+		.form-group
+			label(from="category") 分类
+			select.form-control.input-lg(name="category", required)
+				option(value="") - 选择分类 -
+				each category in categories
+					option(value=category._id,selected=(category._id.toString() === post.category._id.toString())) #{category.name}
+		.form-group
+			label(from="content") 内容
+			textarea#js-post-content.form-control(name="content", required)!= post.content
+		button.btn.btn-lg.btn-info(type="submit")= post.category._id === '' ? "保存修改" :"发布文章"
+
+block scripts
+	script(src="/admin/ckeditor/ckeditor.js")
+	script(src="/admin/scripts/post.js")
+
+

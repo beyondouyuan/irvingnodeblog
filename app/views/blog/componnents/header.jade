@@ -1,0 +1,24 @@
+.blog-masthead
+  .container
+    nav.blog-nav
+      //- 使用中间express.js中的本地全局变量设置当前页面激活项
+      if pageName ==='/' || pageName === '/posts'
+        a.blog-nav-item.active(href="/") 首页
+      else
+        a.blog-nav-item(href="/") 首页
+      if pageName ==='/archiving'
+        a.blog-nav-item.active(href="/archiving") 归档
+      else
+        a.blog-nav-item(href="/archiving") 归档
+      if pageName ==='/note'
+        a.blog-nav-item.active(href="/note") 笔记
+      else
+        a.blog-nav-item(href="/note") 笔记
+      if pageName ==='/contact'
+        a.blog-nav-item.active(href="/contact") 联系我
+      else
+        a.blog-nav-item(href="/contact") 联系我
+      if pageName ==='/about'
+        a.blog-nav-item.active(href="/about") 关于
+      else
+        a.blog-nav-item(href="/about") 关于

@@ -4,13 +4,16 @@ html(lang='en')
     meta(charset='UTF-8')
     meta(name='viewport', content='width=device-width')
     title= title
+    //- 引入静态文件，在config中已经使用/public公共文件，此处秩序直接使用public下的
     block css
-      link(rel='stylesheet', href='/public/components/bootstrap/dist/css/bootstrap.css')
-      link(rel='stylesheet', href='/css/style.css')
-    block js
-      script(src='/public/components/jquery/dist/jquery.js')
-      script(src='/public/components/bootstrap/dist/js/bootstrap.js')
-      if ENV_DEVELOPMENT
-        script(src='http://localhost:35729/livereload.js')
+      link(rel='stylesheet', href='/components/bootstrap/dist/css/bootstrap.css')
   body
-    block content
+    block main
+
+    block js
+      script(src='/components/jquery/dist/jquery.js')
+      script(src='/components/bootstrap/dist/js/bootstrap.js')
+      script(src='/components/jquery-validation/dist/jquery.validate.js')
+    if ENV_DEVELOPMENT
+        script(src='http://localhost:35729/livereload.js')
+    block scripts

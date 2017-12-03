@@ -1,0 +1,33 @@
+extends layout
+block content
+	//- 此处不能直接使用posts.length获取文章总数，因为传到页面的文章已经使用slice分割为每页10条，所以若是直接使用该变量将得到的数据都是当前分页中的数据即10条，所以可以使用在分割前得到的totalCount变量，将其赋值给articleNum并传入到页面模板中，可以获得正确数据
+	h2.page-header #{category.name}下的所有文章(#{articleNum})
+	each post in posts
+		.post
+			h3.post-title
+				a(href="/posts/view/" + post._id, target="_blank") #{post.title}
+			.post-abstract #{truncate(post.content, 150)}
+			.post-meta
+				span.post-created 时间：&nbsp; #{moment(post.created).format('YYYY-MM-DD')}
+				span.post-author 作者：&nbsp; #{post.author.name}
+				span.post-category 分类：&nbsp;
+					a(href="/posts/category/" + post.category.name,target="_blank") #{post.category.name}
+				span.post-comment 评论：&nbsp; #{post.comments.length || 0}
+				span.post-comment 喜欢：&nbsp; #{post.meta.love || 0}
+				span.post-link
+					a(href="/posts/view/" + post._id, target="_blank") 查看全文
+
+
+	//- 分页器
+	//- 测试成功，注意路由，与index.jade下不同哦，分类页面中是在当前路由下的分页
+	if pageCount > 1
+		nav
+			ul.pagination
+				- var currentPage = 1;
+				while currentPage < pageCount
+					if(currentPage === pageNum)
+						li.active
+							a(href="?page=" + currentPage) #{currentPage++}
+					else
+						li
+							a(href="?page=" + currentPage) #{currentPage++}

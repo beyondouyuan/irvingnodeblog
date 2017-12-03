@@ -1,0 +1,17 @@
+extends ../layout
+
+append css
+	link(rel='stylesheet', href='/components/font-awesome/css/font-awesome.css')
+	link(rel='stylesheet', href='/website/style/blog.css')
+
+block main
+	block header
+		include componnents/header
+	.container
+		.row
+			.col-sm-8.blog-main
+				block content
+			.col-sm-3.col-sm-offset-1.blog-sidebar
+				include componnents/sidebar
+	block footer
+		include componnents/footer
